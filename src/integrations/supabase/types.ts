@@ -14,6 +14,226 @@ export type Database = {
   }
   public: {
     Tables: {
+      family_members: {
+        Row: {
+          birth_place: string | null
+          created_at: string
+          current_place: string | null
+          date_of_birth: string | null
+          date_of_death: string | null
+          display_name: string | null
+          full_name: string
+          gender: Database["public"]["Enums"]["gender_type"] | null
+          generation: number | null
+          id: string
+          is_alive: boolean
+          is_root: boolean
+          notes: string | null
+          occupation: string | null
+          photo_url: string | null
+          tree_id: string
+          updated_at: string
+        }
+        Insert: {
+          birth_place?: string | null
+          created_at?: string
+          current_place?: string | null
+          date_of_birth?: string | null
+          date_of_death?: string | null
+          display_name?: string | null
+          full_name: string
+          gender?: Database["public"]["Enums"]["gender_type"] | null
+          generation?: number | null
+          id?: string
+          is_alive?: boolean
+          is_root?: boolean
+          notes?: string | null
+          occupation?: string | null
+          photo_url?: string | null
+          tree_id: string
+          updated_at?: string
+        }
+        Update: {
+          birth_place?: string | null
+          created_at?: string
+          current_place?: string | null
+          date_of_birth?: string | null
+          date_of_death?: string | null
+          display_name?: string | null
+          full_name?: string
+          gender?: Database["public"]["Enums"]["gender_type"] | null
+          generation?: number | null
+          id?: string
+          is_alive?: boolean
+          is_root?: boolean
+          notes?: string | null
+          occupation?: string | null
+          photo_url?: string | null
+          tree_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "family_members_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      family_trees: {
+        Row: {
+          ancestral_village: string | null
+          created_at: string
+          description: string | null
+          gotra: string | null
+          id: string
+          kul: string | null
+          language: string
+          name: string
+          owner_id: string
+          surname: string | null
+          updated_at: string
+        }
+        Insert: {
+          ancestral_village?: string | null
+          created_at?: string
+          description?: string | null
+          gotra?: string | null
+          id?: string
+          kul?: string | null
+          language?: string
+          name: string
+          owner_id: string
+          surname?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ancestral_village?: string | null
+          created_at?: string
+          description?: string | null
+          gotra?: string | null
+          id?: string
+          kul?: string | null
+          language?: string
+          name?: string
+          owner_id?: string
+          surname?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      marriages: {
+        Row: {
+          created_at: string
+          id: string
+          marriage_date: string | null
+          marriage_place: string | null
+          notes: string | null
+          spouse_a_id: string
+          spouse_b_id: string
+          status: Database["public"]["Enums"]["marriage_status"]
+          tree_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          marriage_date?: string | null
+          marriage_place?: string | null
+          notes?: string | null
+          spouse_a_id: string
+          spouse_b_id: string
+          status?: Database["public"]["Enums"]["marriage_status"]
+          tree_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          marriage_date?: string | null
+          marriage_place?: string | null
+          notes?: string | null
+          spouse_a_id?: string
+          spouse_b_id?: string
+          status?: Database["public"]["Enums"]["marriage_status"]
+          tree_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marriages_spouse_a_id_fkey"
+            columns: ["spouse_a_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marriages_spouse_b_id_fkey"
+            columns: ["spouse_b_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "marriages_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parent_child_relationships: {
+        Row: {
+          child_id: string
+          created_at: string
+          id: string
+          parent_id: string
+          relationship_type: Database["public"]["Enums"]["parent_child_type"]
+          tree_id: string
+        }
+        Insert: {
+          child_id: string
+          created_at?: string
+          id?: string
+          parent_id: string
+          relationship_type?: Database["public"]["Enums"]["parent_child_type"]
+          tree_id: string
+        }
+        Update: {
+          child_id?: string
+          created_at?: string
+          id?: string
+          parent_id?: string
+          relationship_type?: Database["public"]["Enums"]["parent_child_type"]
+          tree_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parent_child_relationships_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parent_child_relationships_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "family_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parent_child_relationships_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -88,6 +308,9 @@ export type Database = {
         | "family_admin"
         | "contributor"
         | "viewer"
+      gender_type: "male" | "female" | "other"
+      marriage_status: "married" | "divorced" | "widowed" | "separated"
+      parent_child_type: "biological" | "adopted" | "step"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -222,6 +445,9 @@ export const Constants = {
         "contributor",
         "viewer",
       ],
+      gender_type: ["male", "female", "other"],
+      marriage_status: ["married", "divorced", "widowed", "separated"],
+      parent_child_type: ["biological", "adopted", "step"],
     },
   },
 } as const
