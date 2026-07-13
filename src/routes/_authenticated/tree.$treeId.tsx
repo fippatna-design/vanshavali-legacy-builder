@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { ArrowLeft, Plus, Trash2, User } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowLeft, GitBranch, Heart, Link2, Plus, Trash2, User } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
