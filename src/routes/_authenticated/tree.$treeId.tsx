@@ -164,6 +164,23 @@ function TreePage() {
 
   const tree = treeQuery.data;
   const members = membersQuery.data ?? [];
+  const pcs = pcQuery.data ?? [];
+  const marriages = marriagesQuery.data ?? [];
+  const relByMember = useMemo(() => {
+    const parents = new Map<string, string[]>();
+    const children = new Map<string, string[]>();
+    const spouses = new Map<string, string[]>();
+    for (const p of pcs) {
+      children.set(p.parent_id, [...(children.get(p.parent_id) ?? []), p.child_id]);
+      parents.set(p.child_id, [...(parents.get(p.child_id) ?? []), p.parent_id]);
+    }
+    for (const m of marriages) {
+      spouses.set(m.spouse_a_id, [...(spouses.get(m.spouse_a_id) ?? []), m.spouse_b_id]);
+      spouses.set(m.spouse_b_id, [...(spouses.get(m.spouse_b_id) ?? []), m.spouse_a_id]);
+    }
+    return { parents, children, spouses };
+  }, [pcs, marriages]);
+  const nameById = useMemo(() => new Map(members.map((m) => [m.id, m.full_name])), [members]);
 
   return (
     <div className="min-h-screen bg-parchment-gradient">
