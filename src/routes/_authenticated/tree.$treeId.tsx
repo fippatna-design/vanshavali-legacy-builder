@@ -285,6 +285,15 @@ function TreePage() {
                   </div>
                 )}
                 {m.notes && <p className="mt-2 text-sm text-muted-foreground">{m.notes}</p>}
+                <MemberRelations
+                  member={m}
+                  members={members}
+                  parentIds={relByMember.parents.get(m.id) ?? []}
+                  childIds={relByMember.children.get(m.id) ?? []}
+                  spouseIds={relByMember.spouses.get(m.id) ?? []}
+                  nameById={nameById}
+                  treeId={treeId}
+                />
               </div>
             ))}
           </div>
