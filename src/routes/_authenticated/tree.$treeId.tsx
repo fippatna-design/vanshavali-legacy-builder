@@ -97,6 +97,30 @@ function TreePage() {
     },
   });
 
+  const pcQuery = useQuery({
+    queryKey: ["pc", treeId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("parent_child_relationships")
+        .select("id, parent_id, child_id, relationship_type")
+        .eq("tree_id", treeId);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const marriagesQuery = useQuery({
+    queryKey: ["marriages", treeId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("marriages")
+        .select("id, spouse_a_id, spouse_b_id, status")
+        .eq("tree_id", treeId);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const deleteMember = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("family_members").delete().eq("id", id);
@@ -105,6 +129,8 @@ function TreePage() {
     onSuccess: () => {
       toast.success("Member removed");
       queryClient.invalidateQueries({ queryKey: ["family_members", treeId] });
+      queryClient.invalidateQueries({ queryKey: ["pc", treeId] });
+      queryClient.invalidateQueries({ queryKey: ["marriages", treeId] });
     },
     onError: (e: Error) => toast.error("Could not remove", { description: e.message }),
   });
