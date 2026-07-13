@@ -18,6 +18,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedTreeTreeIdRouteImport } from './routes/_authenticated/tree.$treeId'
+import { Route as AuthenticatedTreeTreeIdViewRouteImport } from './routes/_authenticated/tree.$treeId.view'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -63,6 +64,12 @@ const AuthenticatedTreeTreeIdRoute = AuthenticatedTreeTreeIdRouteImport.update({
   path: '/tree/$treeId',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTreeTreeIdViewRoute =
+  AuthenticatedTreeTreeIdViewRouteImport.update({
+    id: '/view',
+    path: '/view',
+    getParentRoute: () => AuthenticatedTreeTreeIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,7 +79,8 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/tree/$treeId': typeof AuthenticatedTreeTreeIdRoute
+  '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,7 +90,8 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/tree/$treeId': typeof AuthenticatedTreeTreeIdRoute
+  '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,7 +103,8 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/tree/$treeId': typeof AuthenticatedTreeTreeIdRoute
+  '/_authenticated/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/_authenticated/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/dashboard'
     | '/tree/$treeId'
+    | '/tree/$treeId/view'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/dashboard'
     | '/tree/$treeId'
+    | '/tree/$treeId/view'
   id:
     | '__root__'
     | '/'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
     | '/_authenticated/tree/$treeId'
+    | '/_authenticated/tree/$treeId/view'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -205,17 +218,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTreeTreeIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/tree/$treeId/view': {
+      id: '/_authenticated/tree/$treeId/view'
+      path: '/view'
+      fullPath: '/tree/$treeId/view'
+      preLoaderRoute: typeof AuthenticatedTreeTreeIdViewRouteImport
+      parentRoute: typeof AuthenticatedTreeTreeIdRoute
+    }
   }
 }
 
+interface AuthenticatedTreeTreeIdRouteChildren {
+  AuthenticatedTreeTreeIdViewRoute: typeof AuthenticatedTreeTreeIdViewRoute
+}
+
+const AuthenticatedTreeTreeIdRouteChildren: AuthenticatedTreeTreeIdRouteChildren =
+  {
+    AuthenticatedTreeTreeIdViewRoute: AuthenticatedTreeTreeIdViewRoute,
+  }
+
+const AuthenticatedTreeTreeIdRouteWithChildren =
+  AuthenticatedTreeTreeIdRoute._addFileChildren(
+    AuthenticatedTreeTreeIdRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedTreeTreeIdRoute: typeof AuthenticatedTreeTreeIdRoute
+  AuthenticatedTreeTreeIdRoute: typeof AuthenticatedTreeTreeIdRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedTreeTreeIdRoute: AuthenticatedTreeTreeIdRoute,
+  AuthenticatedTreeTreeIdRoute: AuthenticatedTreeTreeIdRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
