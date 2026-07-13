@@ -489,3 +489,197 @@ function AddMemberDialog({
     </Dialog>
   );
 }
+
+function MemberRelations({
+  member,
+  members,
+  parentIds,
+  childIds,
+  spouseIds,
+  nameById,
+  treeId,
+}: {
+  member: { id: string; full_name: string };
+  members: { id: string; full_name: string }[];
+  parentIds: string[];
+  childIds: string[];
+  spouseIds: string[];
+  nameById: Map<string, string>;
+  treeId: string;
+}) {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [newParent, setNewParent] = useState("");
+  const [newSpouse, setNewSpouse] = useState("");
+
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: ["pc", treeId] });
+    queryClient.invalidateQueries({ queryKey: ["marriages", treeId] });
+  };
+
+  const addParent = useMutation({
+    mutationFn: async (parentId: string) => {
+      const { error } = await supabase.from("parent_child_relationships").insert({
+        tree_id: treeId,
+        parent_id: parentId,
+        child_id: member.id,
+        relationship_type: "biological",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Parent linked"); invalidate(); setNewParent(""); },
+    onError: (e: Error) => toast.error("Could not link", { description: e.message }),
+  });
+
+  const addSpouse = useMutation({
+    mutationFn: async (spouseId: string) => {
+      const { error } = await supabase.from("marriages").insert({
+        tree_id: treeId,
+        spouse_a_id: member.id,
+        spouse_b_id: spouseId,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Spouse linked"); invalidate(); setNewSpouse(""); },
+    onError: (e: Error) => toast.error("Could not link", { description: e.message }),
+  });
+
+  const removeParent = useMutation({
+    mutationFn: async (parentId: string) => {
+      const { error } = await supabase
+        .from("parent_child_relationships")
+        .delete()
+        .eq("tree_id", treeId)
+        .eq("parent_id", parentId)
+        .eq("child_id", member.id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Removed"); invalidate(); },
+  });
+
+  const removeSpouse = useMutation({
+    mutationFn: async (spouseId: string) => {
+      const { error } = await supabase
+        .from("marriages")
+        .delete()
+        .eq("tree_id", treeId)
+        .or(`and(spouse_a_id.eq.${member.id},spouse_b_id.eq.${spouseId}),and(spouse_a_id.eq.${spouseId},spouse_b_id.eq.${member.id})`);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Removed"); invalidate(); },
+  });
+
+  const parentOptions = members.filter(
+    (x) => x.id !== member.id && !parentIds.includes(x.id) && !childIds.includes(x.id),
+  );
+  const spouseOptions = members.filter(
+    (x) => x.id !== member.id && !spouseIds.includes(x.id) && !parentIds.includes(x.id) && !childIds.includes(x.id),
+  );
+
+  return (
+    <>
+      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/60 pt-3 text-xs">
+        <span className="text-muted-foreground">
+          {parentIds.length} parent · {childIds.length} child · {spouseIds.length} spouse
+        </span>
+        <Button variant="ghost" size="sm" className="ml-auto h-7 px-2 text-xs" onClick={() => setOpen(true)}>
+          <Link2 className="mr-1 h-3 w-3" /> Relations
+        </Button>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-xl text-primary">{member.full_name} — Relations</DialogTitle>
+            <DialogDescription>Link parents, children (via the child's card), and spouses.</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <section>
+              <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Parents</div>
+              {parentIds.length === 0 ? (
+                <div className="text-sm text-muted-foreground">None</div>
+              ) : (
+                <ul className="space-y-1">
+                  {parentIds.map((id) => (
+                    <li key={id} className="flex items-center justify-between rounded-md bg-muted/40 px-2 py-1 text-sm">
+                      <span>{nameById.get(id) ?? id}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeParent.mutate(id)}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="mt-2 flex gap-2">
+                <Select value={newParent} onValueChange={setNewParent}>
+                  <SelectTrigger><SelectValue placeholder="Add parent…" /></SelectTrigger>
+                  <SelectContent>
+                    {parentOptions.length === 0 && <div className="p-2 text-xs text-muted-foreground">No candidates</div>}
+                    {parentOptions.map((o) => (
+                      <SelectItem key={o.id} value={o.id}>{o.full_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button size="sm" disabled={!newParent || addParent.isPending} onClick={() => addParent.mutate(newParent)}>
+                  Link
+                </Button>
+              </div>
+            </section>
+
+            <section>
+              <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Children</div>
+              {childIds.length === 0 ? (
+                <div className="text-sm text-muted-foreground">None. Open a child's card to set this person as their parent.</div>
+              ) : (
+                <ul className="space-y-1">
+                  {childIds.map((id) => (
+                    <li key={id} className="rounded-md bg-muted/40 px-2 py-1 text-sm">{nameById.get(id) ?? id}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+
+            <section>
+              <div className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <Heart className="h-3 w-3" /> Spouses
+              </div>
+              {spouseIds.length === 0 ? (
+                <div className="text-sm text-muted-foreground">None</div>
+              ) : (
+                <ul className="space-y-1">
+                  {spouseIds.map((id) => (
+                    <li key={id} className="flex items-center justify-between rounded-md bg-muted/40 px-2 py-1 text-sm">
+                      <span>{nameById.get(id) ?? id}</span>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => removeSpouse.mutate(id)}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="mt-2 flex gap-2">
+                <Select value={newSpouse} onValueChange={setNewSpouse}>
+                  <SelectTrigger><SelectValue placeholder="Add spouse…" /></SelectTrigger>
+                  <SelectContent>
+                    {spouseOptions.length === 0 && <div className="p-2 text-xs text-muted-foreground">No candidates</div>}
+                    {spouseOptions.map((o) => (
+                      <SelectItem key={o.id} value={o.id}>{o.full_name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button size="sm" disabled={!newSpouse || addSpouse.isPending} onClick={() => addSpouse.mutate(newSpouse)}>
+                  Link
+                </Button>
+              </div>
+            </section>
+          </div>
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
