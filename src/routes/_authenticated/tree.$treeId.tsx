@@ -26,6 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ShareTreeDialog } from "@/components/share-tree-dialog";
 
 export const Route = createFileRoute("/_authenticated/tree/$treeId")({
   head: () => ({
@@ -45,6 +46,8 @@ type Tree = {
   kul: string | null;
   ancestral_village: string | null;
   description: string | null;
+  owner_id: string;
+  visibility: "private" | "link" | "public";
 };
 
 type Member = {
@@ -73,12 +76,18 @@ function TreePage() {
     queryFn: async (): Promise<Tree> => {
       const { data, error } = await supabase
         .from("family_trees")
-        .select("id, name, surname, gotra, kul, ancestral_village, description")
+        .select("id, name, surname, gotra, kul, ancestral_village, description, owner_id, visibility")
         .eq("id", treeId)
         .single();
       if (error) throw error;
-      return data;
+      return data as Tree;
     },
+  });
+
+  const userQuery = useQuery({
+    queryKey: ["auth-user"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user,
+    staleTime: 60_000,
   });
 
   const membersQuery = useQuery({

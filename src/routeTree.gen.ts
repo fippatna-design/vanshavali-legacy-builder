@@ -18,6 +18,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as TreeTreeIdPublicRouteImport } from './routes/tree.$treeId.public'
 import { Route as AuthenticatedTreeTreeIdRouteImport } from './routes/_authenticated/tree.$treeId'
 import { Route as AuthenticatedTreeTreeIdViewRouteImport } from './routes/_authenticated/tree.$treeId.view'
 
@@ -65,6 +66,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const TreeTreeIdPublicRoute = TreeTreeIdPublicRouteImport.update({
+  id: '/tree/$treeId/public',
+  path: '/tree/$treeId/public',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedTreeTreeIdRoute = AuthenticatedTreeTreeIdRouteImport.update({
   id: '/tree/$treeId',
   path: '/tree/$treeId',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/invite/$token': typeof InviteTokenRoute
   '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRoutesByTo {
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/invite/$token': typeof InviteTokenRoute
   '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRoutesById {
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/invite/$token': typeof InviteTokenRoute
   '/_authenticated/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/_authenticated/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRouteTypes {
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/invite/$token'
     | '/tree/$treeId'
+    | '/tree/$treeId/public'
     | '/tree/$treeId/view'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/invite/$token'
     | '/tree/$treeId'
+    | '/tree/$treeId/public'
     | '/tree/$treeId/view'
   id:
     | '__root__'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/invite/$token'
     | '/_authenticated/tree/$treeId'
+    | '/tree/$treeId/public'
     | '/_authenticated/tree/$treeId/view'
   fileRoutesById: FileRoutesById
 }
@@ -164,6 +176,7 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   InviteTokenRoute: typeof InviteTokenRoute
+  TreeTreeIdPublicRoute: typeof TreeTreeIdPublicRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/tree/$treeId/public': {
+      id: '/tree/$treeId/public'
+      path: '/tree/$treeId/public'
+      fullPath: '/tree/$treeId/public'
+      preLoaderRoute: typeof TreeTreeIdPublicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/tree/$treeId': {
       id: '/_authenticated/tree/$treeId'
       path: '/tree/$treeId'
@@ -284,6 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   InviteTokenRoute: InviteTokenRoute,
+  TreeTreeIdPublicRoute: TreeTreeIdPublicRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
