@@ -16,7 +16,9 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as TreeTreeIdPublicRouteImport } from './routes/tree.$treeId.public'
 import { Route as AuthenticatedTreeTreeIdRouteImport } from './routes/_authenticated/tree.$treeId'
 import { Route as AuthenticatedTreeTreeIdViewRouteImport } from './routes/_authenticated/tree.$treeId.view'
 
@@ -54,10 +56,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const TreeTreeIdPublicRoute = TreeTreeIdPublicRouteImport.update({
+  id: '/tree/$treeId/public',
+  path: '/tree/$treeId/public',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedTreeTreeIdRoute = AuthenticatedTreeTreeIdRouteImport.update({
   id: '/tree/$treeId',
@@ -79,7 +91,9 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRoutesByTo {
@@ -90,7 +104,9 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRoutesById {
@@ -103,7 +119,9 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/_authenticated/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
+  '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/_authenticated/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
 }
 export interface FileRouteTypes {
@@ -116,7 +134,9 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/invite/$token'
     | '/tree/$treeId'
+    | '/tree/$treeId/public'
     | '/tree/$treeId/view'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,7 +147,9 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/sitemap.xml'
     | '/dashboard'
+    | '/invite/$token'
     | '/tree/$treeId'
+    | '/tree/$treeId/public'
     | '/tree/$treeId/view'
   id:
     | '__root__'
@@ -139,7 +161,9 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/sitemap.xml'
     | '/_authenticated/dashboard'
+    | '/invite/$token'
     | '/_authenticated/tree/$treeId'
+    | '/tree/$treeId/public'
     | '/_authenticated/tree/$treeId/view'
   fileRoutesById: FileRoutesById
 }
@@ -151,6 +175,8 @@ export interface RootRouteChildren {
   FeaturesRoute: typeof FeaturesRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  InviteTokenRoute: typeof InviteTokenRoute
+  TreeTreeIdPublicRoute: typeof TreeTreeIdPublicRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -204,12 +230,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/tree/$treeId/public': {
+      id: '/tree/$treeId/public'
+      path: '/tree/$treeId/public'
+      fullPath: '/tree/$treeId/public'
+      preLoaderRoute: typeof TreeTreeIdPublicRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/tree/$treeId': {
       id: '/_authenticated/tree/$treeId'
@@ -263,6 +303,8 @@ const rootRouteChildren: RootRouteChildren = {
   FeaturesRoute: FeaturesRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  InviteTokenRoute: InviteTokenRoute,
+  TreeTreeIdPublicRoute: TreeTreeIdPublicRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

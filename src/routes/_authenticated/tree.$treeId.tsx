@@ -26,6 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ShareTreeDialog } from "@/components/share-tree-dialog";
 
 export const Route = createFileRoute("/_authenticated/tree/$treeId")({
   head: () => ({
@@ -45,6 +46,8 @@ type Tree = {
   kul: string | null;
   ancestral_village: string | null;
   description: string | null;
+  owner_id: string;
+  visibility: "private" | "link" | "public";
 };
 
 type Member = {
@@ -73,12 +76,18 @@ function TreePage() {
     queryFn: async (): Promise<Tree> => {
       const { data, error } = await supabase
         .from("family_trees")
-        .select("id, name, surname, gotra, kul, ancestral_village, description")
+        .select("id, name, surname, gotra, kul, ancestral_village, description, owner_id, visibility")
         .eq("id", treeId)
         .single();
       if (error) throw error;
-      return data;
+      return data as Tree;
     },
+  });
+
+  const userQuery = useQuery({
+    queryKey: ["auth-user"],
+    queryFn: async () => (await supabase.auth.getUser()).data.user,
+    staleTime: 60_000,
   });
 
   const membersQuery = useQuery({
@@ -196,19 +205,26 @@ function TreePage() {
                 <span className="hidden md:inline">View Tree</span>
               </Link>
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-destructive hover:text-destructive"
-              onClick={() => {
-                if (confirm("Delete this Vanshavali and all its members? This cannot be undone.")) {
-                  deleteTree.mutate();
-                }
-              }}
-            >
-              <Trash2 className="h-4 w-4 md:mr-1.5" />
-              <span className="hidden md:inline">Delete Vanshavali</span>
-            </Button>
+            <ShareTreeDialog
+              treeId={treeId}
+              visibility={tree.visibility}
+              isOwner={userQuery.data?.id === tree.owner_id}
+            />
+            {userQuery.data?.id === tree.owner_id && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive"
+                onClick={() => {
+                  if (confirm("Delete this Vanshavali and all its members? This cannot be undone.")) {
+                    deleteTree.mutate();
+                  }
+                }}
+              >
+                <Trash2 className="h-4 w-4 md:mr-1.5" />
+                <span className="hidden md:inline">Delete Vanshavali</span>
+              </Button>
+            )}
           </div>
         </div>
       </header>

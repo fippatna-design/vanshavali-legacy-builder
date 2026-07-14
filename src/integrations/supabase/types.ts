@@ -25,6 +25,8 @@ export type Database = {
           full_name: string
           gender: Database["public"]["Enums"]["gender_type"] | null
           generation: number | null
+          hide_contact: boolean
+          hide_dob: boolean
           id: string
           is_alive: boolean
           is_root: boolean
@@ -44,6 +46,8 @@ export type Database = {
           full_name: string
           gender?: Database["public"]["Enums"]["gender_type"] | null
           generation?: number | null
+          hide_contact?: boolean
+          hide_dob?: boolean
           id?: string
           is_alive?: boolean
           is_root?: boolean
@@ -63,6 +67,8 @@ export type Database = {
           full_name?: string
           gender?: Database["public"]["Enums"]["gender_type"] | null
           generation?: number | null
+          hide_contact?: boolean
+          hide_dob?: boolean
           id?: string
           is_alive?: boolean
           is_root?: boolean
@@ -95,6 +101,7 @@ export type Database = {
           owner_id: string
           surname: string | null
           updated_at: string
+          visibility: Database["public"]["Enums"]["tree_visibility"]
         }
         Insert: {
           ancestral_village?: string | null
@@ -108,6 +115,7 @@ export type Database = {
           owner_id: string
           surname?: string | null
           updated_at?: string
+          visibility?: Database["public"]["Enums"]["tree_visibility"]
         }
         Update: {
           ancestral_village?: string | null
@@ -121,6 +129,7 @@ export type Database = {
           owner_id?: string
           surname?: string | null
           updated_at?: string
+          visibility?: Database["public"]["Enums"]["tree_visibility"]
         }
         Relationships: []
       }
@@ -267,6 +276,88 @@ export type Database = {
         }
         Relationships: []
       }
+      tree_collaborators: {
+        Row: {
+          created_at: string
+          id: string
+          invited_by: string | null
+          role: Database["public"]["Enums"]["collab_role"]
+          tree_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["collab_role"]
+          tree_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["collab_role"]
+          tree_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tree_collaborators_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tree_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string
+          role: Database["public"]["Enums"]["collab_role"]
+          token: string
+          tree_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by: string
+          role?: Database["public"]["Enums"]["collab_role"]
+          token?: string
+          tree_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          role?: Database["public"]["Enums"]["collab_role"]
+          token?: string
+          tree_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tree_invitations_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -293,11 +384,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_edit_tree: {
+        Args: { _tree_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_view_tree: {
+        Args: { _tree_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_tree_owner: {
+        Args: { _tree_id: string; _user_id: string }
         Returns: boolean
       }
     }
@@ -308,9 +411,11 @@ export type Database = {
         | "family_admin"
         | "contributor"
         | "viewer"
+      collab_role: "viewer" | "editor"
       gender_type: "male" | "female" | "other"
       marriage_status: "married" | "divorced" | "widowed" | "separated"
       parent_child_type: "biological" | "adopted" | "step"
+      tree_visibility: "private" | "link" | "public"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -445,9 +550,11 @@ export const Constants = {
         "contributor",
         "viewer",
       ],
+      collab_role: ["viewer", "editor"],
       gender_type: ["male", "female", "other"],
       marriage_status: ["married", "divorced", "widowed", "separated"],
       parent_child_type: ["biological", "adopted", "step"],
+      tree_visibility: ["private", "link", "public"],
     },
   },
 } as const
