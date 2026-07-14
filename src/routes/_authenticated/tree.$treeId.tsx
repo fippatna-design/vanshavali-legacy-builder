@@ -205,19 +205,26 @@ function TreePage() {
                 <span className="hidden md:inline">View Tree</span>
               </Link>
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-destructive hover:text-destructive"
-              onClick={() => {
-                if (confirm("Delete this Vanshavali and all its members? This cannot be undone.")) {
-                  deleteTree.mutate();
-                }
-              }}
-            >
-              <Trash2 className="h-4 w-4 md:mr-1.5" />
-              <span className="hidden md:inline">Delete Vanshavali</span>
-            </Button>
+            <ShareTreeDialog
+              treeId={treeId}
+              visibility={tree.visibility}
+              isOwner={userQuery.data?.id === tree.owner_id}
+            />
+            {userQuery.data?.id === tree.owner_id && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive"
+                onClick={() => {
+                  if (confirm("Delete this Vanshavali and all its members? This cannot be undone.")) {
+                    deleteTree.mutate();
+                  }
+                }}
+              >
+                <Trash2 className="h-4 w-4 md:mr-1.5" />
+                <span className="hidden md:inline">Delete Vanshavali</span>
+              </Button>
+            )}
           </div>
         </div>
       </header>
