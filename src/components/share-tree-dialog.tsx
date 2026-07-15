@@ -148,7 +148,14 @@ export function ShareTreeDialog({
   });
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  const publicUrl = `${origin}/tree/${treeId}/public`;
+  const shareToken = treeMeta.data?.share_token ?? null;
+  const publicUrl =
+    visibility === "public"
+      ? `${origin}/tree/${treeId}/public`
+      : shareToken
+        ? `${origin}/tree/${treeId}/public?t=${shareToken}`
+        : "";
+
 
   const copy = (text: string) => {
     navigator.clipboard.writeText(text);
