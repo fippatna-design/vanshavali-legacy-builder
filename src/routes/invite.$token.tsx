@@ -28,53 +28,39 @@ function InvitePage() {
     let cancelled = false;
     (async () => {
       const { data: userRes } = await supabase.auth.getUser();
-      const { data: inv, error } = await supabase
-        .from("tree_invitations")
-        .select("id, tree_id, email, role, expires_at, accepted_at")
-        .eq("token", token)
-        .maybeSingle();
-      if (cancelled) return;
-      if (error || !inv) {
-        setStatus("invalid");
-        setMessage("This invitation link is invalid or has expired.");
-        return;
-      }
-      if (inv.accepted_at) {
-        setStatus("invalid");
-        setMessage("This invitation has already been used.");
-        return;
-      }
-      if (new Date(inv.expires_at) < new Date()) {
-        setStatus("invalid");
-        setMessage("This invitation has expired.");
-        return;
-      }
-      setTreeId(inv.tree_id);
+
       if (!userRes.user) {
+        // Only peek — do not accept yet
+        const { data, error } = await supabase.rpc("peek_invitation", { _token: token });
+        if (cancelled) return;
+        const row = Array.isArray(data) ? data[0] : data;
+        if (error || !row) {
+          setStatus("invalid");
+          setMessage("This invitation link is invalid, expired, or already used.");
+          return;
+        }
+        setTreeId(row.tree_id);
         setStatus("need-auth");
         return;
       }
+
       setStatus("accepting");
-      const { error: cErr } = await supabase.from("tree_collaborators").insert({
-        tree_id: inv.tree_id,
-        user_id: userRes.user.id,
-        role: inv.role,
-      });
-      if (cErr && !cErr.message.toLowerCase().includes("duplicate")) {
+      const { data, error } = await supabase.rpc("accept_invitation", { _token: token });
+      if (cancelled) return;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (error || !row) {
         setStatus("error");
-        setMessage(cErr.message);
+        setMessage(error?.message ?? "Invitation invalid, expired, or already used.");
         return;
       }
-      await supabase
-        .from("tree_invitations")
-        .update({ accepted_at: new Date().toISOString(), accepted_by: userRes.user.id })
-        .eq("id", inv.id);
+      setTreeId(row.tree_id);
       setStatus("done");
     })();
     return () => {
       cancelled = true;
     };
   }, [token]);
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-parchment-gradient px-4">
