@@ -1,10 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
+const searchSchema = z.object({ t: z.string().optional() });
+
 export const Route = createFileRoute("/tree/$treeId/public")({
+  validateSearch: searchSchema,
   head: ({ params }) => ({
     meta: [
       { title: "Vanshavali — Family Tree" },
@@ -47,30 +51,30 @@ type Member = {
 
 function PublicTreePage() {
   const { treeId } = Route.useParams();
+  const { t: token } = Route.useSearch();
 
   const treeQuery = useQuery({
-    queryKey: ["public_tree", treeId],
+    queryKey: ["public_tree", treeId, token ?? null],
     queryFn: async (): Promise<Tree | null> => {
-      const { data } = await supabase
-        .from("family_trees")
-        .select("id, name, surname, gotra, kul, ancestral_village, description, visibility")
-        .eq("id", treeId)
-        .maybeSingle();
-      return data as Tree | null;
+      const { data, error } = await supabase.rpc("get_shared_tree", {
+        _tree_id: treeId,
+        _token: token ?? undefined,
+      });
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      return (row as Tree | undefined) ?? null;
     },
   });
 
   const membersQuery = useQuery({
-    queryKey: ["public_members", treeId],
+    queryKey: ["public_members", treeId, token ?? null],
     enabled: !!treeQuery.data,
     queryFn: async (): Promise<Member[]> => {
-      const { data } = await supabase
-        .from("family_members")
-        .select(
-          "id, full_name, gender, is_alive, is_root, generation, birth_place, current_place, occupation, date_of_birth, hide_dob, hide_contact",
-        )
-        .eq("tree_id", treeId)
-        .order("generation", { ascending: true, nullsFirst: true });
+      const { data, error } = await supabase.rpc("get_shared_tree_members", {
+        _tree_id: treeId,
+        _token: token ?? undefined,
+      });
+      if (error) throw error;
       return (data ?? []) as Member[];
     },
   });
@@ -86,7 +90,7 @@ function PublicTreePage() {
         <div>
           <h1 className="font-heading text-2xl text-primary">Vanshavali not found</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            This tree is private or the link is invalid.
+            This tree is private, or the share link is missing or invalid.
           </p>
           <Button asChild className="mt-4">
             <Link to="/">Home</Link>
@@ -155,11 +159,11 @@ function PublicTreePage() {
                   {typeof m.generation === "number" && ` · Gen ${m.generation}`}
                   {!m.is_alive && " · Deceased"}
                 </div>
-                {(m.birth_place || (!m.hide_contact && m.current_place) || m.occupation || (!m.hide_dob && m.date_of_birth)) && (
+                {(m.birth_place || m.current_place || m.occupation || m.date_of_birth) && (
                   <div className="mt-2 space-y-0.5 text-xs text-muted-foreground">
-                    {!m.hide_dob && m.date_of_birth && <div>Born: {m.date_of_birth}</div>}
+                    {m.date_of_birth && <div>Born: {m.date_of_birth}</div>}
                     {m.birth_place && <div>Birth place: {m.birth_place}</div>}
-                    {!m.hide_contact && m.current_place && <div>Lives: {m.current_place}</div>}
+                    {m.current_place && <div>Lives: {m.current_place}</div>}
                     {m.occupation && <div>Work: {m.occupation}</div>}
                   </div>
                 )}

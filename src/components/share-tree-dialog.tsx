@@ -41,6 +41,20 @@ export function ShareTreeDialog({
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("viewer");
 
+  const treeMeta = useQuery({
+    queryKey: ["tree_share_meta", treeId],
+    enabled: open && isOwner,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("family_trees")
+        .select("share_token, visibility")
+        .eq("id", treeId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const collabs = useQuery({
     queryKey: ["collabs", treeId],
     enabled: open && isOwner,
@@ -53,6 +67,7 @@ export function ShareTreeDialog({
       return data ?? [];
     },
   });
+
 
   const invites = useQuery({
     queryKey: ["invites", treeId],
@@ -133,7 +148,14 @@ export function ShareTreeDialog({
   });
 
   const origin = typeof window !== "undefined" ? window.location.origin : "";
-  const publicUrl = `${origin}/tree/${treeId}/public`;
+  const shareToken = treeMeta.data?.share_token ?? null;
+  const publicUrl =
+    visibility === "public"
+      ? `${origin}/tree/${treeId}/public`
+      : shareToken
+        ? `${origin}/tree/${treeId}/public?t=${shareToken}`
+        : "";
+
 
   const copy = (text: string) => {
     navigator.clipboard.writeText(text);
