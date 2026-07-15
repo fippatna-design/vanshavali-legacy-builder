@@ -99,6 +99,7 @@ export type Database = {
           language: string
           name: string
           owner_id: string
+          share_token: string | null
           surname: string | null
           updated_at: string
           visibility: Database["public"]["Enums"]["tree_visibility"]
@@ -113,6 +114,7 @@ export type Database = {
           language?: string
           name: string
           owner_id: string
+          share_token?: string | null
           surname?: string | null
           updated_at?: string
           visibility?: Database["public"]["Enums"]["tree_visibility"]
@@ -127,6 +129,7 @@ export type Database = {
           language?: string
           name?: string
           owner_id?: string
+          share_token?: string | null
           surname?: string | null
           updated_at?: string
           visibility?: Database["public"]["Enums"]["tree_visibility"]
@@ -384,6 +387,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_invitation: {
+        Args: { _token: string }
+        Returns: {
+          role: Database["public"]["Enums"]["collab_role"]
+          tree_id: string
+        }[]
+      }
       can_edit_tree: {
         Args: { _tree_id: string; _user_id: string }
         Returns: boolean
@@ -391,6 +401,36 @@ export type Database = {
       can_view_tree: {
         Args: { _tree_id: string; _user_id: string }
         Returns: boolean
+      }
+      get_shared_tree: {
+        Args: { _token?: string; _tree_id: string }
+        Returns: {
+          ancestral_village: string
+          description: string
+          gotra: string
+          id: string
+          kul: string
+          name: string
+          surname: string
+          visibility: Database["public"]["Enums"]["tree_visibility"]
+        }[]
+      }
+      get_shared_tree_members: {
+        Args: { _token?: string; _tree_id: string }
+        Returns: {
+          birth_place: string
+          current_place: string
+          date_of_birth: string
+          full_name: string
+          gender: string
+          generation: number
+          hide_contact: boolean
+          hide_dob: boolean
+          id: string
+          is_alive: boolean
+          is_root: boolean
+          occupation: string
+        }[]
       }
       has_role: {
         Args: {
@@ -402,6 +442,14 @@ export type Database = {
       is_tree_owner: {
         Args: { _tree_id: string; _user_id: string }
         Returns: boolean
+      }
+      peek_invitation: {
+        Args: { _token: string }
+        Returns: {
+          expires_at: string
+          role: Database["public"]["Enums"]["collab_role"]
+          tree_id: string
+        }[]
       }
     }
     Enums: {
