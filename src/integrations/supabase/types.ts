@@ -14,6 +14,137 @@ export type Database = {
   }
   public: {
     Tables: {
+      coupon_redemptions: {
+        Row: {
+          coupon_id: string
+          id: string
+          payment_id: string | null
+          redeemed_at: string
+          user_id: string
+        }
+        Insert: {
+          coupon_id: string
+          id?: string
+          payment_id?: string | null
+          redeemed_at?: string
+          user_id: string
+        }
+        Update: {
+          coupon_id?: string
+          id?: string
+          payment_id?: string | null
+          redeemed_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_redemptions_payment_fk"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          applies_to: Database["public"]["Enums"]["entitlement_kind"] | null
+          code: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          kind: Database["public"]["Enums"]["coupon_kind"]
+          max_redemptions: number | null
+          starts_at: string | null
+          times_redeemed: number
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          applies_to?: Database["public"]["Enums"]["entitlement_kind"] | null
+          code: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          kind: Database["public"]["Enums"]["coupon_kind"]
+          max_redemptions?: number | null
+          starts_at?: string | null
+          times_redeemed?: number
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          applies_to?: Database["public"]["Enums"]["entitlement_kind"] | null
+          code?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          kind?: Database["public"]["Enums"]["coupon_kind"]
+          max_redemptions?: number | null
+          starts_at?: string | null
+          times_redeemed?: number
+          updated_at?: string
+          value?: number
+        }
+        Relationships: []
+      }
+      export_orders: {
+        Row: {
+          created_at: string
+          entitlement_used:
+            | Database["public"]["Enums"]["entitlement_kind"]
+            | null
+          file_size_bytes: number | null
+          id: string
+          kind: Database["public"]["Enums"]["export_kind"]
+          member_count: number | null
+          tree_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entitlement_used?:
+            | Database["public"]["Enums"]["entitlement_kind"]
+            | null
+          file_size_bytes?: number | null
+          id?: string
+          kind: Database["public"]["Enums"]["export_kind"]
+          member_count?: number | null
+          tree_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entitlement_used?:
+            | Database["public"]["Enums"]["entitlement_kind"]
+            | null
+          file_size_bytes?: number | null
+          id?: string
+          kind?: Database["public"]["Enums"]["export_kind"]
+          member_count?: number | null
+          tree_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "export_orders_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       family_members: {
         Row: {
           birth_place: string | null
@@ -246,6 +377,175 @@ export type Database = {
           },
         ]
       }
+      payment_entitlements: {
+        Row: {
+          entitlement: Database["public"]["Enums"]["entitlement_kind"]
+          granted_at: string
+          id: string
+          payment_id: string | null
+          tree_id: string
+          user_id: string
+        }
+        Insert: {
+          entitlement: Database["public"]["Enums"]["entitlement_kind"]
+          granted_at?: string
+          id?: string
+          payment_id?: string | null
+          tree_id: string
+          user_id: string
+        }
+        Update: {
+          entitlement?: Database["public"]["Enums"]["entitlement_kind"]
+          granted_at?: string
+          id?: string
+          payment_id?: string | null
+          tree_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_entitlements_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_entitlements_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount_paise: number
+          coupon_id: string | null
+          created_at: string
+          currency: string
+          discount_paise: number
+          entitlement: Database["public"]["Enums"]["entitlement_kind"]
+          error_reason: string | null
+          id: string
+          metadata: Json
+          paid_at: string | null
+          plan_id: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          razorpay_signature: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          tree_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paise: number
+          coupon_id?: string | null
+          created_at?: string
+          currency?: string
+          discount_paise?: number
+          entitlement: Database["public"]["Enums"]["entitlement_kind"]
+          error_reason?: string | null
+          id?: string
+          metadata?: Json
+          paid_at?: string | null
+          plan_id: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          tree_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paise?: number
+          coupon_id?: string | null
+          created_at?: string
+          currency?: string
+          discount_paise?: number
+          entitlement?: Database["public"]["Enums"]["entitlement_kind"]
+          error_reason?: string | null
+          id?: string
+          metadata?: Json
+          paid_at?: string | null
+          plan_id?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          tree_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_tree_id_fkey"
+            columns: ["tree_id"]
+            isOneToOne: false
+            referencedRelation: "family_trees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pricing_plans: {
+        Row: {
+          amount_paise: number
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          entitlement: Database["public"]["Enums"]["entitlement_kind"]
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          amount_paise: number
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          entitlement: Database["public"]["Enums"]["entitlement_kind"]
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          amount_paise?: number
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          entitlement?: Database["public"]["Enums"]["entitlement_kind"]
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -432,6 +732,14 @@ export type Database = {
           occupation: string
         }[]
       }
+      has_entitlement: {
+        Args: {
+          _kind: Database["public"]["Enums"]["entitlement_kind"]
+          _tree_id: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -460,9 +768,13 @@ export type Database = {
         | "contributor"
         | "viewer"
       collab_role: "viewer" | "editor"
+      coupon_kind: "percent" | "flat"
+      entitlement_kind: "full_pdf" | "poster_pdf" | "high_res_bundle"
+      export_kind: "preview_pdf" | "full_pdf" | "poster_pdf"
       gender_type: "male" | "female" | "other"
       marriage_status: "married" | "divorced" | "widowed" | "separated"
       parent_child_type: "biological" | "adopted" | "step"
+      payment_status: "created" | "attempted" | "paid" | "failed" | "refunded"
       tree_visibility: "private" | "link" | "public"
     }
     CompositeTypes: {
@@ -599,9 +911,13 @@ export const Constants = {
         "viewer",
       ],
       collab_role: ["viewer", "editor"],
+      coupon_kind: ["percent", "flat"],
+      entitlement_kind: ["full_pdf", "poster_pdf", "high_res_bundle"],
+      export_kind: ["preview_pdf", "full_pdf", "poster_pdf"],
       gender_type: ["male", "female", "other"],
       marriage_status: ["married", "divorced", "widowed", "separated"],
       parent_child_type: ["biological", "adopted", "step"],
+      payment_status: ["created", "attempted", "paid", "failed", "refunded"],
       tree_visibility: ["private", "link", "public"],
     },
   },
