@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://rlkjppdolrrlxgnyhvfp.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "vanshavali-mcp",
+      "version": "0.1.0",
+      "title": "Vanshavali"
+    },
+    "tools": [
+      {
+        "name": "list_family_trees",
+        "title": "List family trees",
+        "description": "List the signed-in user's Vanshavali family trees they own or collaborate on.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_family_members",
+        "title": "List family members",
+        "description": "List all family members in a specific Vanshavali family tree the signed-in user can view.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "tree_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The UUID of the family tree."
+            }
+          },
+          "required": [
+            "tree_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "add_family_member",
+        "title": "Add family member",
+        "description": "Add a new family member to a Vanshavali family tree. The signed-in user must own or have editor access to the tree.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "tree_id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The UUID of the family tree."
+            },
+            "full_name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Full name of the family member."
+            },
+            "gender": {
+              "type": "string",
+              "enum": [
+                "male",
+                "female",
+                "other"
+              ],
+              "description": "Gender."
+            },
+            "is_alive": {
+              "type": "boolean",
+              "description": "Whether the person is currently alive."
+            },
+            "generation": {
+              "type": "integer",
+              "description": "Generation number (1 = root/founder, 2 = children, etc.)."
+            },
+            "date_of_birth": {
+              "type": "string",
+              "description": "Date of birth in YYYY-MM-DD, or empty string if unknown."
+            },
+            "birth_place": {
+              "type": "string",
+              "description": "Birth place, or empty string if unknown."
+            },
+            "occupation": {
+              "type": "string",
+              "description": "Occupation, or empty string if unknown."
+            }
+          },
+          "required": [
+            "tree_id",
+            "full_name",
+            "gender",
+            "is_alive",
+            "generation",
+            "date_of_birth",
+            "birth_place",
+            "occupation"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
