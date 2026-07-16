@@ -35,17 +35,28 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Same-origin relative path only. Prevents open-redirect via ?redirect=.
+  const safeRedirect =
+    search.redirect && /^\/[^/].*/.test(search.redirect) ? search.redirect : null;
+  const postAuthTarget = safeRedirect ?? "/dashboard";
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
+      if (data.session) {
+        if (safeRedirect) {
+          window.location.href = safeRedirect;
+        } else {
+          navigate({ to: "/dashboard", replace: true });
+        }
+      }
     });
-  }, [navigate]);
+  }, [navigate, safeRedirect]);
 
   async function handleGoogle() {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/auth",
+        redirect_uri: window.location.origin + postAuthTarget,
       });
       if (result.error) {
         toast.error("Google sign-in failed", { description: String(result.error?.message ?? result.error) });
@@ -54,7 +65,7 @@ function AuthPage() {
       }
       if (result.redirected) return; // browser will redirect
       // popup flow succeeded
-      navigate({ to: "/dashboard", replace: true });
+      window.location.href = postAuthTarget;
     } catch (e) {
       toast.error("Google sign-in failed", { description: (e as Error).message });
       setLoading(false);
@@ -70,18 +81,18 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin + "/dashboard",
+            emailRedirectTo: window.location.origin + postAuthTarget,
             data: { full_name: fullName, display_name: fullName },
           },
         });
         if (error) throw error;
         toast.success("Welcome to Vanshavali!");
-        navigate({ to: "/dashboard", replace: true });
+        window.location.href = postAuthTarget;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Signed in");
-        navigate({ to: "/dashboard", replace: true });
+        window.location.href = postAuthTarget;
       }
     } catch (e) {
       toast.error(mode === "signup" ? "Sign up failed" : "Sign in failed", {
