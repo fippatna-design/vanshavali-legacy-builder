@@ -23,6 +23,7 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as TreeTreeIdPublicRouteImport } from './routes/tree.$treeId.public'
 import { Route as AuthenticatedTreeTreeIdRouteImport } from './routes/_authenticated/tree.$treeId'
+import { Route as AuthenticatedAdminBannersRouteImport } from './routes/_authenticated/admin.banners'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedTreeTreeIdViewRouteImport } from './routes/_authenticated/tree.$treeId.view'
@@ -98,6 +99,12 @@ const AuthenticatedTreeTreeIdRoute = AuthenticatedTreeTreeIdRouteImport.update({
   path: '/tree/$treeId',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminBannersRoute =
+  AuthenticatedAdminBannersRouteImport.update({
+    id: '/admin/banners',
+    path: '/admin/banners',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -130,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
   '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
@@ -148,6 +156,7 @@ export interface FileRoutesByTo {
   '/invite/$token': typeof InviteTokenRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
   '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
@@ -168,6 +177,7 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/_authenticated/tree/$treeId': typeof AuthenticatedTreeTreeIdRouteWithChildren
   '/tree/$treeId/public': typeof TreeTreeIdPublicRoute
   '/_authenticated/tree/$treeId/view': typeof AuthenticatedTreeTreeIdViewRoute
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/banners'
     | '/tree/$treeId'
     | '/tree/$treeId/public'
     | '/tree/$treeId/view'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/banners'
     | '/tree/$treeId'
     | '/tree/$treeId/public'
     | '/tree/$treeId/view'
@@ -225,6 +237,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/admin/banners'
     | '/_authenticated/tree/$treeId'
     | '/tree/$treeId/public'
     | '/_authenticated/tree/$treeId/view'
@@ -347,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTreeTreeIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/banners': {
+      id: '/_authenticated/admin/banners'
+      path: '/admin/banners'
+      fullPath: '/admin/banners'
+      preLoaderRoute: typeof AuthenticatedAdminBannersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -387,11 +407,13 @@ const AuthenticatedTreeTreeIdRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedAdminBannersRoute: typeof AuthenticatedAdminBannersRoute
   AuthenticatedTreeTreeIdRoute: typeof AuthenticatedTreeTreeIdRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedAdminBannersRoute: AuthenticatedAdminBannersRoute,
   AuthenticatedTreeTreeIdRoute: AuthenticatedTreeTreeIdRouteWithChildren,
 }
 

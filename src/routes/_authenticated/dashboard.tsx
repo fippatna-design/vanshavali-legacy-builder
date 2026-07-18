@@ -57,6 +57,20 @@ function Dashboard() {
     },
   });
 
+  const isSuperAdminQuery = useQuery({
+    queryKey: ["is-super-admin", user.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "super_admin")
+        .maybeSingle();
+      return !!data;
+    },
+  });
+
+
   async function handleSignOut() {
     await queryClient.cancelQueries();
     queryClient.clear();
@@ -78,11 +92,19 @@ function Dashboard() {
               <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Dashboard</div>
             </div>
           </Link>
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 md:mr-1.5" />
-            <span className="hidden md:inline">Sign out</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            {isSuperAdminQuery.data && (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/admin/banners">Admin</Link>
+              </Button>
+            )}
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4 md:mr-1.5" />
+              <span className="hidden md:inline">Sign out</span>
+            </Button>
+          </div>
         </div>
+
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-10 md:px-6">

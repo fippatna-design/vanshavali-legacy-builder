@@ -18,28 +18,23 @@ export const Route = createFileRoute("/pricing")({
 
 const tiers = [
   {
-    name: "Free",
+    name: "Everything Free",
     price: "₹0",
     tag: "Forever",
-    features: ["Create your family tree", "Unlimited generations", "Sons, daughters, marriages", "Photos & biographies", "Private sharing", "Watermarked preview PDF"],
-    cta: "Start free",
-  },
-  {
-    name: "A4 Print",
-    price: "₹499",
-    tag: "One-time",
-    features: ["High-resolution A4 PDF", "No watermark", "3 template designs", "QR code", "Lifetime download"],
-    cta: "Coming soon",
+    features: [
+      "Create your family tree",
+      "Unlimited generations",
+      "Sons, daughters, marriages",
+      "Photos & biographies",
+      "Private & link sharing (secure)",
+      "PDF export & print",
+      "Collaborate with family members",
+    ],
+    cta: "Start now",
     highlight: true,
   },
-  {
-    name: "Poster",
-    price: "₹1,499",
-    tag: "One-time",
-    features: ["A2 & A1 wall poster PDF", "All A4 features", "Royal manuscript template", "Print-ready color profile", "Custom family emblem"],
-    cta: "Coming soon",
-  },
 ];
+
 
 function Pricing() {
   return (
@@ -49,10 +44,11 @@ function Pricing() {
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="font-heading text-4xl font-semibold text-primary md:text-5xl">Pricing</h1>
           <p className="mt-3 text-muted-foreground">
-            Build for free. Pay only when you're ready to print a beautiful Vanshavali.
+            Vanshavali is 100% free — build, share, and print your family tree at no cost.
           </p>
+
         </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+        <div className="mt-12 grid gap-6 md:mx-auto md:max-w-md">
           {tiers.map((t) => (
             <div
               key={t.name}
@@ -81,8 +77,9 @@ function Pricing() {
           ))}
         </div>
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Final print pricing may vary by template and format. Prices in INR.
+          Your family data is private and secure. Only you decide who can view it.
         </p>
+
       </main>
       <SiteFooter />
     </div>

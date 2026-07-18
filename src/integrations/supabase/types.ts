@@ -579,6 +579,45 @@ export type Database = {
         }
         Relationships: []
       }
+      site_banners: {
+        Row: {
+          bg_color: string
+          created_at: string
+          id: string
+          is_active: boolean
+          link_label: string | null
+          link_url: string | null
+          message: string
+          sort_order: number
+          text_color: string
+          updated_at: string
+        }
+        Insert: {
+          bg_color?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          link_label?: string | null
+          link_url?: string | null
+          message: string
+          sort_order?: number
+          text_color?: string
+          updated_at?: string
+        }
+        Update: {
+          bg_color?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          link_label?: string | null
+          link_url?: string | null
+          message?: string
+          sort_order?: number
+          text_color?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tree_collaborators: {
         Row: {
           created_at: string
