@@ -4,6 +4,8 @@ import { Menu, X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { SiteBanner } from "@/components/site-banner";
+
 
 export function SiteHeader() {
   const [signedIn, setSignedIn] = useState(false);
@@ -25,8 +27,11 @@ export function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-parchment/85 backdrop-blur">
+    <>
+      <SiteBanner />
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-parchment/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 md:px-6">
+
         <Link to="/" className="flex items-center gap-2.5">
           <img
             src="/icons/icon-192.png"
