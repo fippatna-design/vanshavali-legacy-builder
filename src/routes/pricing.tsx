@@ -18,28 +18,23 @@ export const Route = createFileRoute("/pricing")({
 
 const tiers = [
   {
-    name: "Free",
+    name: "Everything Free",
     price: "₹0",
     tag: "Forever",
-    features: ["Create your family tree", "Unlimited generations", "Sons, daughters, marriages", "Photos & biographies", "Private sharing", "Watermarked preview PDF"],
-    cta: "Start free",
-  },
-  {
-    name: "A4 Print",
-    price: "₹499",
-    tag: "One-time",
-    features: ["High-resolution A4 PDF", "No watermark", "3 template designs", "QR code", "Lifetime download"],
-    cta: "Coming soon",
+    features: [
+      "Create your family tree",
+      "Unlimited generations",
+      "Sons, daughters, marriages",
+      "Photos & biographies",
+      "Private & link sharing (secure)",
+      "PDF export & print",
+      "Collaborate with family members",
+    ],
+    cta: "Start now",
     highlight: true,
   },
-  {
-    name: "Poster",
-    price: "₹1,499",
-    tag: "One-time",
-    features: ["A2 & A1 wall poster PDF", "All A4 features", "Royal manuscript template", "Print-ready color profile", "Custom family emblem"],
-    cta: "Coming soon",
-  },
 ];
+
 
 function Pricing() {
   return (
