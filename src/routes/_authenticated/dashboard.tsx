@@ -103,18 +103,8 @@ function Dashboard() {
               <span className="hidden md:inline">Sign out</span>
             </Button>
           </div>
-
-            <img src="/icons/icon-192.png" alt="" width={36} height={36} className="h-9 w-9 rounded-md" />
-            <div className="leading-tight">
-              <div className="font-heading text-lg font-semibold text-primary">Vanshavali</div>
-              <div className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">Dashboard</div>
-            </div>
-          </Link>
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 md:mr-1.5" />
-            <span className="hidden md:inline">Sign out</span>
-          </Button>
         </div>
+
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-10 md:px-6">
