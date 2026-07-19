@@ -244,8 +244,12 @@ function AdminBanners() {
                     {b.message}
                   </div>
                   <div className="text-xs text-muted-foreground">
+                    <span className="mr-2 inline-block rounded bg-primary/10 px-1.5 py-0.5 font-semibold text-primary">
+                      {b.placement === "home_card" ? "Home card" : "Top bar"}
+                    </span>
                     {b.link_url ? `${b.link_label || "Link"} → ${b.link_url}` : "No link"} · order {b.sort_order}
                   </div>
+
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   <div className="flex items-center gap-2">
