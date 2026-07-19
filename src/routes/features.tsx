@@ -33,7 +33,7 @@ const groups = [
   },
   {
     title: "Print & export",
-    items: ["Traditional Vanshavali template", "Royal manuscript template", "Modern minimal template", "A4 / A3 / A2 / A1 poster export", "QR code back to digital tree", "No watermark after payment"],
+    items: ["Traditional Vanshavali template", "Royal manuscript template", "Modern minimal template", "A4 / A3 / A2 / A1 poster export", "QR code back to digital tree", "Free — no watermark"],
   },
 ];
 

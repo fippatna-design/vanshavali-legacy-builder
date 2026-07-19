@@ -171,28 +171,28 @@ function LandingPage() {
       <section className="mx-auto max-w-6xl px-4 py-20 md:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-semibold text-primary md:text-4xl">
-            Build for free. Pay when you print.
+            100% free to use.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            No credit card required to start. Unlock printing when your Vanshavali is ready.
+            No credit card, no hidden charges. Build, share and print your Vanshavali at no cost.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 md:gap-8">
-          <div className="rounded-2xl border border-border bg-card p-8">
+        <div className="mt-12 grid gap-6 md:mx-auto md:max-w-md">
+          <div className="rounded-2xl border-2 border-accent bg-card p-8 shadow-gold">
             <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Free forever
             </div>
             <div className="mt-2 font-heading text-4xl font-semibold text-foreground">₹0</div>
-            <p className="mt-1 text-sm text-muted-foreground">Everything you need to build.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Everything included.</p>
             <ul className="mt-6 space-y-2.5 text-sm">
               {[
                 "Create your family tree",
                 "Unlimited generations",
                 "Sons, daughters & marriages",
                 "Photos & biographies",
-                "Private sharing",
-                "Watermarked preview PDF",
+                "Private & link sharing (secure)",
+                "PDF export & print",
               ].map((f) => (
                 <li key={f} className="flex items-center gap-2">
                   <Check className="h-4 w-4 text-accent" /> {f}
@@ -203,38 +203,9 @@ function LandingPage() {
               <Link to="/auth" search={{ mode: "signup" }}>Start building</Link>
             </Button>
           </div>
-
-          <div className="relative rounded-2xl border-2 border-accent bg-card p-8 shadow-gold">
-            <div className="absolute -top-3 left-8 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-              Premium Print
-            </div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-primary">
-              Pay per export
-            </div>
-            <div className="mt-2 font-heading text-4xl font-semibold text-foreground">
-              from ₹499
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">One-time payment per Vanshavali.</p>
-            <ul className="mt-6 space-y-2.5 text-sm">
-              {[
-                "High-resolution PDF (no watermark)",
-                "A4 / A3 / A2 / A1 poster export",
-                "Traditional, royal & modern templates",
-                "QR code back to your digital tree",
-                "Print-ready color profile",
-                "Lifetime download",
-              ].map((f) => (
-                <li key={f} className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-accent" /> {f}
-                </li>
-              ))}
-            </ul>
-            <Button asChild className="mt-6 w-full">
-              <Link to="/pricing">See print options</Link>
-            </Button>
-          </div>
         </div>
       </section>
+
 
       {/* CTA */}
       <section className="bg-primary text-primary-foreground">

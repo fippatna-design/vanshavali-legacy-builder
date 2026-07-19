@@ -38,8 +38,8 @@ const items = [
     a: "There is no fixed limit on generations. Add as many as your family history holds.",
   },
   {
-    q: "Which payment methods will you support?",
-    a: "We're building support for Indian payment methods including UPI, cards, and net banking. Payments will roll out with the print engine in the next update.",
+    q: "Is Vanshavali really free?",
+    a: "Yes. Vanshavali is 100% free to use — building, sharing, and printing your family tree costs nothing.",
   },
   {
     q: "Can multiple family members contribute to one tree?",
