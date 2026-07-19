@@ -73,7 +73,9 @@ function AdminBanners() {
     bg_color: "#5a1a1a",
     text_color: "#f7f2e6",
     sort_order: 0,
+    placement: "top" as "top" | "home_card",
   });
+
 
   const createMut = useMutation({
     mutationFn: async () => {
