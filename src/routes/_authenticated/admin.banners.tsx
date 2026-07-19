@@ -86,18 +86,20 @@ function AdminBanners() {
         bg_color: form.bg_color,
         text_color: form.text_color,
         sort_order: Number(form.sort_order) || 0,
+        placement: form.placement,
         is_active: true,
       });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Banner created");
-      setForm({ message: "", link_url: "", link_label: "", bg_color: "#5a1a1a", text_color: "#f7f2e6", sort_order: 0 });
+      setForm({ message: "", link_url: "", link_label: "", bg_color: "#5a1a1a", text_color: "#f7f2e6", sort_order: 0, placement: "top" });
       qc.invalidateQueries({ queryKey: ["admin-banners"] });
       qc.invalidateQueries({ queryKey: ["site-banners"] });
     },
     onError: (e: any) => toast.error(e.message || "Failed"),
   });
+
 
   const toggleMut = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
