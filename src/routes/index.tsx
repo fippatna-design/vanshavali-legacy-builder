@@ -13,6 +13,7 @@ import {
 import heroTree from "@/assets/hero-tree.jpg";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteBanner } from "@/components/site-banner";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -23,9 +24,11 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-parchment-gradient">
       <SiteHeader />
+      <SiteBanner placement="home_card" />
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-heritage-pattern">
+
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-2 md:gap-16 md:px-6 md:py-24">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-primary">
