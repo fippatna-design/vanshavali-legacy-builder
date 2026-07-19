@@ -13,16 +13,17 @@ type Banner = {
   text_color: string;
 };
 
-export function SiteBanner() {
+export function SiteBanner({ placement = "top" }: { placement?: "top" | "home_card" }) {
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
   const { data } = useQuery({
-    queryKey: ["site-banners"],
+    queryKey: ["site-banners", placement],
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("site_banners")
         .select("id,message,link_url,link_label,bg_color,text_color")
         .eq("is_active", true)
+        .eq("placement", placement)
         .order("sort_order", { ascending: true })
         .limit(3);
       if (error) return [] as Banner[];
@@ -33,6 +34,50 @@ export function SiteBanner() {
 
   const banners = (data ?? []).filter((b) => !dismissed.has(b.id));
   if (banners.length === 0) return null;
+
+  if (placement === "home_card") {
+    return (
+      <div className="mx-auto grid max-w-6xl gap-3 px-4 pt-6 md:px-6">
+        {banners.map((b) => (
+          <div
+            key={b.id}
+            style={{ backgroundColor: b.bg_color, color: b.text_color }}
+            className="relative overflow-hidden rounded-2xl px-5 py-4 shadow-heritage sm:px-6 sm:py-5"
+          >
+            <div className="flex flex-col items-start gap-2 pr-8 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+              <p className="text-sm font-medium leading-snug sm:text-base">{b.message}</p>
+              {b.link_url && (
+                <a
+                  href={b.link_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex shrink-0 items-center gap-1 rounded-full border border-current/30 bg-white/10 px-3 py-1.5 text-xs font-semibold backdrop-blur hover:bg-white/20 sm:text-sm"
+                  style={{ color: b.text_color }}
+                >
+                  {b.link_label || "Learn more"} →
+                </a>
+              )}
+            </div>
+            <button
+              aria-label="Dismiss"
+              onClick={() =>
+                setDismissed((s) => {
+                  const n = new Set(s);
+                  n.add(b.id);
+                  return n;
+                })
+              }
+              className="absolute right-2 top-2 rounded p-1 opacity-70 hover:opacity-100"
+              style={{ color: b.text_color }}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
 
   return (
     <div className="w-full">

@@ -588,6 +588,7 @@ export type Database = {
           link_label: string | null
           link_url: string | null
           message: string
+          placement: string
           sort_order: number
           text_color: string
           updated_at: string
@@ -600,6 +601,7 @@ export type Database = {
           link_label?: string | null
           link_url?: string | null
           message: string
+          placement?: string
           sort_order?: number
           text_color?: string
           updated_at?: string
@@ -612,6 +614,7 @@ export type Database = {
           link_label?: string | null
           link_url?: string | null
           message?: string
+          placement?: string
           sort_order?: number
           text_color?: string
           updated_at?: string

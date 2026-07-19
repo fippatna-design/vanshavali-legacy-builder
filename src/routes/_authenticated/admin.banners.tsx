@@ -30,7 +30,9 @@ type Banner = {
   text_color: string;
   is_active: boolean;
   sort_order: number;
+  placement: "top" | "home_card";
 };
+
 
 function AdminBanners() {
   const nav = useNavigate();
@@ -71,7 +73,9 @@ function AdminBanners() {
     bg_color: "#5a1a1a",
     text_color: "#f7f2e6",
     sort_order: 0,
+    placement: "top" as "top" | "home_card",
   });
+
 
   const createMut = useMutation({
     mutationFn: async () => {
@@ -82,18 +86,20 @@ function AdminBanners() {
         bg_color: form.bg_color,
         text_color: form.text_color,
         sort_order: Number(form.sort_order) || 0,
+        placement: form.placement,
         is_active: true,
       });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Banner created");
-      setForm({ message: "", link_url: "", link_label: "", bg_color: "#5a1a1a", text_color: "#f7f2e6", sort_order: 0 });
+      setForm({ message: "", link_url: "", link_label: "", bg_color: "#5a1a1a", text_color: "#f7f2e6", sort_order: 0, placement: "top" });
       qc.invalidateQueries({ queryKey: ["admin-banners"] });
       qc.invalidateQueries({ queryKey: ["site-banners"] });
     },
     onError: (e: any) => toast.error(e.message || "Failed"),
   });
+
 
   const toggleMut = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
@@ -173,6 +179,27 @@ function AdminBanners() {
                 />
               </div>
             </div>
+            <div>
+              <Label>Placement</Label>
+              <div className="mt-1 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, placement: "top" })}
+                  className={`rounded-lg border px-3 py-2 text-left text-sm ${form.placement === "top" ? "border-accent bg-accent/10" : "border-border"}`}
+                >
+                  <div className="font-semibold">Top bar</div>
+                  <div className="text-xs text-muted-foreground">Thin bar on every page</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, placement: "home_card" })}
+                  className={`rounded-lg border px-3 py-2 text-left text-sm ${form.placement === "home_card" ? "border-accent bg-accent/10" : "border-border"}`}
+                >
+                  <div className="font-semibold">Home card</div>
+                  <div className="text-xs text-muted-foreground">Big ad card on homepage only</div>
+                </button>
+              </div>
+            </div>
             <div className="grid gap-3 sm:grid-cols-3">
               <div>
                 <Label>Background</Label>
@@ -191,6 +218,7 @@ function AdminBanners() {
                 />
               </div>
             </div>
+
             <Button
               onClick={() => createMut.mutate()}
               disabled={!form.message.trim() || createMut.isPending}
@@ -216,8 +244,12 @@ function AdminBanners() {
                     {b.message}
                   </div>
                   <div className="text-xs text-muted-foreground">
+                    <span className="mr-2 inline-block rounded bg-primary/10 px-1.5 py-0.5 font-semibold text-primary">
+                      {b.placement === "home_card" ? "Home card" : "Top bar"}
+                    </span>
                     {b.link_url ? `${b.link_label || "Link"} → ${b.link_url}` : "No link"} · order {b.sort_order}
                   </div>
+
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   <div className="flex items-center gap-2">

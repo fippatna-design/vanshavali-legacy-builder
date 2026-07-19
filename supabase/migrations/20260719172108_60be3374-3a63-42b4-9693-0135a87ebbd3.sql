@@ -1,0 +1,1 @@
+ALTER TABLE public.site_banners ADD COLUMN IF NOT EXISTS placement TEXT NOT NULL DEFAULT 'top' CHECK (placement IN ('top','home_card'));
