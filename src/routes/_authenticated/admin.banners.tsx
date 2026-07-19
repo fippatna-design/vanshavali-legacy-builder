@@ -179,6 +179,27 @@ function AdminBanners() {
                 />
               </div>
             </div>
+            <div>
+              <Label>Placement</Label>
+              <div className="mt-1 grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, placement: "top" })}
+                  className={`rounded-lg border px-3 py-2 text-left text-sm ${form.placement === "top" ? "border-accent bg-accent/10" : "border-border"}`}
+                >
+                  <div className="font-semibold">Top bar</div>
+                  <div className="text-xs text-muted-foreground">Thin bar on every page</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, placement: "home_card" })}
+                  className={`rounded-lg border px-3 py-2 text-left text-sm ${form.placement === "home_card" ? "border-accent bg-accent/10" : "border-border"}`}
+                >
+                  <div className="font-semibold">Home card</div>
+                  <div className="text-xs text-muted-foreground">Big ad card on homepage only</div>
+                </button>
+              </div>
+            </div>
             <div className="grid gap-3 sm:grid-cols-3">
               <div>
                 <Label>Background</Label>
@@ -197,6 +218,7 @@ function AdminBanners() {
                 />
               </div>
             </div>
+
             <Button
               onClick={() => createMut.mutate()}
               disabled={!form.message.trim() || createMut.isPending}
