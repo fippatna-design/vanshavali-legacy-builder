@@ -56,8 +56,9 @@ function LandingPage() {
               </Button>
             </div>
             <p className="mt-4 text-xs text-muted-foreground">
-              Free to build. Pay only when you print or export.
+              100% free to build, share and print.
             </p>
+
           </div>
 
           <div className="relative">
