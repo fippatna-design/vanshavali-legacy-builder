@@ -30,7 +30,9 @@ type Banner = {
   text_color: string;
   is_active: boolean;
   sort_order: number;
+  placement: "top" | "home_card";
 };
+
 
 function AdminBanners() {
   const nav = useNavigate();
