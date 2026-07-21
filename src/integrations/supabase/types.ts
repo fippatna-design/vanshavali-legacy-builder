@@ -774,6 +774,13 @@ export type Database = {
           occupation: string
         }[]
       }
+      get_tree_share_token: {
+        Args: { _tree_id: string }
+        Returns: {
+          share_token: string
+          visibility: Database["public"]["Enums"]["tree_visibility"]
+        }[]
+      }
       has_entitlement: {
         Args: {
           _kind: Database["public"]["Enums"]["entitlement_kind"]
