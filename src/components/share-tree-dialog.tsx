@@ -45,13 +45,12 @@ export function ShareTreeDialog({
     queryKey: ["tree_share_meta", treeId],
     enabled: open && isOwner,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("family_trees")
-        .select("share_token, visibility")
-        .eq("id", treeId)
-        .maybeSingle();
+      const { data, error } = await (supabase as any).rpc("get_tree_share_token", {
+        _tree_id: treeId,
+      });
       if (error) throw error;
-      return data;
+      const row = Array.isArray(data) ? data[0] : data;
+      return (row ?? null) as { share_token: string | null; visibility: string } | null;
     },
   });
 
