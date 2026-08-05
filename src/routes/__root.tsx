@@ -96,14 +96,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Create a beautiful digital Vanshavali. Record sons, daughters, marriages, ancestral villages, gotra and kul. Share privately or print a heritage-quality family tree.",
       },
       { name: "author", content: "Vanshavali" },
-      { property: "og:title", content: "Vanshavali — Digital Family Tree Platform" },
+      { property: "og:title", content: "Vanshavali — Preserve Your Family Lineage Across Generations" },
       {
         property: "og:description",
         content:
-          "अपनी वंशावली को डिजिटल रूप में पीढ़ियों तक सुरक्षित रखें। Build, preserve, and print your family tree.",
+          "Create a beautiful digital Vanshavali. Record sons, daughters, marriages, ancestral villages, gotra and kul. Share privately or print a heritage-quality family tree.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Vanshavali — Preserve Your Family Lineage Across Generations" },
+      { name: "twitter:description", content: "Create a beautiful digital Vanshavali. Record sons, daughters, marriages, ancestral villages, gotra and kul. Share privately or print a heritage-quality family tree." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/af2a3c06-b097-470b-915b-45f4d48161cc/id-preview-1f2494de--9fe641c9-7df5-4cc4-b92d-345aa7ae3753.lovable.app-1784652824525.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/af2a3c06-b097-470b-915b-45f4d48161cc/id-preview-1f2494de--9fe641c9-7df5-4cc4-b92d-345aa7ae3753.lovable.app-1784652824525.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
